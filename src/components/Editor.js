@@ -2,20 +2,34 @@ import React, { useEffect, useState } from 'react';
 import grapesjs from 'grapesjs';
 import 'grapesjs/dist/css/grapes.min.css';
 import gjsNewsletter from 'grapesjs-preset-newsletter';
+import "../styles/editor.css";
+import { tableBlocks } from './tableBlocks';
+import grapesjsFontAwesomePlugin from './grapesjs-fontawesome-plugin';
+import { exportTemplate } from './commands/exportTemplate';
+import { socialBlocks } from './socialBlocks';
 
 const Editor = () => {
   const [editor, setEditor] = useState(null);
 
   useEffect(() => {
     const editor = grapesjs.init({
-      container: '#gjs',
-      plugins: [gjsNewsletter],
+      container: '#email-editor',
+      plugins: [gjsNewsletter, tableBlocks, socialBlocks],
       pluginsOpts: {
         gjsNewsletter: {}
       },
       height: '100vh',
       fromElement: true,
       storageManager: false,
+      canvas: {
+        styles: [
+          'https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css',
+        ],
+      },
+      codeViewer: {
+        readOnly: false,
+      },
+      contenteditable: "true",
       panels: {
         defaults: [
           {
@@ -23,10 +37,10 @@ const Editor = () => {
             el: '.panel__actions',
             buttons: [
               {
-                id: 'get-content',
-                className: 'btn-get-content',
-                label: 'Get Content',
-                command: 'get-content'
+                id: 'export-template',
+                className: 'btn-export-template',
+                label: 'Export Template',
+                command: 'export-template'
               }
             ]
           }
@@ -34,36 +48,7 @@ const Editor = () => {
       }
     });
 
-    // Add custom command to get content
-    editor.Commands.add('get-content', {
-      run: (editor) => {
-        const html = editor.getHtml();
-        const css = editor.getCss();
-        
-        // You can handle the content here
-        console.log('HTML:', html);
-        console.log('CSS:', css);
-        
-        // Example: Create a formatted output
-        const emailContent = `
-          <!DOCTYPE html>
-          <html>
-            <head>
-              <style>${css}</style>
-            </head>
-            <body>
-              ${html}
-            </body>
-          </html>
-        `;
-
-        // Example: Copy to clipboard
-        navigator.clipboard.writeText(emailContent)
-          .then(() => alert('Content copied to clipboard!'))
-          .catch(err => console.error('Failed to copy:', err));
-      }
-    });
-
+    // editor.Commands.add('export-template', exportTemplate);
     setEditor(editor);
 
     return () => {
@@ -79,13 +64,19 @@ const Editor = () => {
     const css = editor.getCss();
     
     // Example of data to send to your backend
-    const emailData = {
-      html,
-      css,
-      subject: 'Newsletter'
-    };
+    const emailContent = `
+          <!DOCTYPE html>
+          <html>
+            <head>
+              <style>${css}</style>
+            </head>
+            <body>
+              ${html}
+            </body>
+          </html>
+        `;
 
-    console.log("===========", emailData);
+    console.log("===========", emailContent);
 
     // Example API call
     // fetch('/api/send-email', {
@@ -105,14 +96,22 @@ const Editor = () => {
     // });
   };
 
+  const handleExport = () => {
+    if (editor) {
+      editor.runCommand('export-template');
+    }
+  };
   return (
     <div className="editor-container">
       <div className="panel__actions">
         <button onClick={handleSendEmail} className="send-email-btn">
           Send Email
         </button>
+        <button onClick={handleExport} className="export-btn">
+          Export Template
+        </button>
       </div>
-      <div id="gjs"></div>
+      <div id="email-editor"></div>
     </div>
   );
 };
