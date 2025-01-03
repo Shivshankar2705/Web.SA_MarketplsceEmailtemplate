@@ -1,33 +1,11 @@
 export const socialBlocks = (editor) => {
   const blockManager = editor.BlockManager;
 
-  // Add Social Icons Block
-  blockManager.add('social-icons', {
-    label: 'Social Icons',
-    category: 'Social',
-    content: `
-      <div class="social-icons" style="text-align: center; padding: 10px;">
-        <a href="#" style="text-decoration: none; margin: 0 10px;">
-          <i class="fab fa-facebook" style="font-size: 24px; color: #3b5998;"></i>
-        </a>
-        <a href="#" style="text-decoration: none; margin: 0 10px;">
-          <i class="fab fa-twitter" style="font-size: 24px; color: #1da1f2;"></i>
-        </a>
-        <a href="#" style="text-decoration: none; margin: 0 10px;">
-          <i class="fab fa-instagram" style="font-size: 24px; color: #e1306c;"></i>
-        </a>
-        <a href="#" style="text-decoration: none; margin: 0 10px;">
-          <i class="fab fa-linkedin" style="font-size: 24px; color: #0077b5;"></i>
-        </a>
-      </div>
-    `,
-    attributes: { class: 'fa' }
-  });
-
   // Add Social Share Block
   blockManager.add('social-share', {
     label: 'Social Share',
     category: 'Social',
+    media: '<i class="fa fa-share fa-2x"></i>',
     content: `
       <div class="social-share" style="text-align: center; padding: 15px; background: #f5f5f5;">
         <p style="margin-bottom: 10px;">Share this content:</p>
@@ -51,6 +29,7 @@ export const socialBlocks = (editor) => {
   blockManager.add('social-follow', {
     label: 'Social Follow',
     category: 'Social',
+    media: '<i class="fa fa-share fa-2x"></i>',
     content: `
       <div class="social-follow" style="text-align: center; padding: 20px;">
         <h3 style="margin-bottom: 15px;">Follow Us</h3>

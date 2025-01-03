@@ -7,7 +7,7 @@ import { tableBlocks } from './tableBlocks';
 import grapesjsFontAwesomePlugin from './grapesjs-fontawesome-plugin';
 import { exportTemplate } from './commands/exportTemplate';
 import { socialBlocks } from './socialBlocks';
-
+import { basicBlocks } from './customBlocks';
 const Editor = () => {
   const [editor, setEditor] = useState(null);
 
@@ -29,26 +29,12 @@ const Editor = () => {
       codeViewer: {
         readOnly: false,
       },
-      contenteditable: "true",
-      panels: {
-        defaults: [
-          {
-            id: 'actions',
-            el: '.panel__actions',
-            buttons: [
-              {
-                id: 'export-template',
-                className: 'btn-export-template',
-                label: 'Export Template',
-                command: 'export-template'
-              }
-            ]
-          }
-        ]
-      }
+      contenteditable: "true"
     });
 
-    // editor.Commands.add('export-template', exportTemplate);
+    basicBlocks(editor);
+
+    editor.Commands.add('export-btn', exportTemplate);
     setEditor(editor);
 
     return () => {
@@ -62,7 +48,7 @@ const Editor = () => {
 
     const html = editor.getHtml();
     const css = editor.getCss();
-    
+
     // Example of data to send to your backend
     const emailContent = `
           <!DOCTYPE html>
@@ -98,18 +84,35 @@ const Editor = () => {
 
   const handleExport = () => {
     if (editor) {
-      editor.runCommand('export-template');
+      editor.runCommand('export-btn');
     }
   };
+
+  const handleTemplateChange = (e) => {
+    const selectedTemplate = e.target.value;
+    console.log("Selected template:", selectedTemplate);
+  };
+
   return (
     <div className="editor-container">
-      <div className="panel__actions">
-        <button onClick={handleSendEmail} className="send-email-btn">
-          Send Email
-        </button>
-        <button onClick={handleExport} className="export-btn">
-          Export Template
-        </button>
+      <div className='editor-container-header'>
+        <div className='editor-container-left'>
+          Select Existing Template
+          <select onChange={handleTemplateChange} className='editor-container-select'>
+            <option value="">Select a template</option>
+            <option value="template-1">Template 1</option>
+            <option value="template-2">Template 2</option>
+            <option value="template-3">Template 3</option>
+          </select>
+        </div>
+        <div className="panel__actions editor-container-right">
+          <button onClick={handleSendEmail} className="send-email-btn">
+            Send Email
+          </button>
+          <button onClick={handleExport} className="export-btn">
+            Export Template
+          </button>
+        </div>
       </div>
       <div id="email-editor"></div>
     </div>
